@@ -11,8 +11,7 @@ library(ggplot2)
 ```
 
 # ABSTRACT
-
-Fill in abstract... Write this last, after finishing methods, results, and discussion. Summarize the overall study question, approach, results, and conclusion in a short paragraph.
+This study uses citizen science data to determine whether peak firefly abundance is occuring earlier over the years. Based on the data and figures created, a linear regression analysis was completed to test for trends in firefly peak sightings. The linear regression test revealed that there was no significant evidence supporting that firefly peak abundance is happening earlier each year (p value > 0.05). The data set presented limitations related to no standardization of the amount of entries per year or the method of data collection and recording. Despite these limitations this research inspires future investigation on the topic and serves as a basis for future research.
 
 # BACKGROUND
 
@@ -30,20 +29,21 @@ knitr::include_graphics("JuneTemps.PNG")
 # STUDY QUESTION and HYPOTHESIS
 
 ## Questions  
-Is firefly peak abundance occuring sooner than in years past due to climate change?
+Is firefly peak abundance occuring sooner than in years previous?
 
 ## Hypothesis 
-Firefly population counts are larger earlier in the year than in prior years due to climate change.
+Firefly population sightings are greater earlier in the year than in prior years.
   
 ## Prediction
-Fill in here... Turn the hypothesis into a testable prediction (e.g., Locations with mosquito blood meals from house finches will also have higher numbers of WNV-positive mosquito pools).
+If the hypothesis is not rejected, then firefly abundance will peak earlier in June when compared to observational data from previous years from summer months.
 
 # METHODS
+To determine whether peak firefly population sightings occuring earlier as years go on, we analyzed Utah citizen science observational data. Using data from citizens across Utah allows us to have a greater understanding of the firefly populations on a more broad scope than if we were to conduct this research ourselves in a limited area. However, the data set we used did have limitations due to the accuracy of evidences. Therefore, we decided to use a metric of instances (the presence of a firefly sighting) instead of firefly counts, which are more difficult to track and record accurately. To further simplify the data, we also used the metric of Julian days, rather than by month and day. This give us a more understandable time metric of when these instances had occurred.
 
-Fill in here... Summarize the procedures and analyses you use in this report. In this section, describe what you did and why. Don’t just restate the code — explain the logic of each analysis in plain language. Keep each subsection short (2–4 sentences).
+We ran three different analyses on the data. The first analysis was focued on analyzing the number of instances in the seasons of each year 2016 through 2024. Each season was correlated with a month for easy visualization and for greater relevance to the research question. The second analysis displayed the day of each year of interest in which peak firefly sightings were made. This allowed us to see day exact day of year if the firefly peak sightings were occurring earlier, the trend line was especially helpful for this. The final analysis was an ANOVA and summary test on the data. This allowed us to test for statistical significance and data correlation. Overall, these analyses helped us conclude how firefly abundance has changed over time.
 
 ## 1st Analysis
-Multiplot
+Multi bar plot showing firefly abundance for months of the year from 2016-2024.
 ```{r}
 data <- read.csv("UtahFireflies - Revised.csv")
 
@@ -57,54 +57,67 @@ ggplot(data, aes(x= Month))+
 
 ```
 
-Fill in here... Explain that you compared the number of mosquito blood meals from each host species between sites with no WNV-positive pools and sites with one or more WNV-positive pools. Describe why a barplot helps visualize this comparison.
+We compared the number of instances (observations of fireflies) for four months each indicating a new season of each year from 2016 to 2024.These months, 3, 6, 9, and 12, represent March, June, September, and December, respectively. This bar blot presenting data across 8 years helps us visualize peak firefly counts for each year. Independent years allow us to see that June is the peak month for firefly observations while data from each year on the same graph helps us easily visualize abundance trends throughout the past 8 years.
 
 ## 2nd Analysis
-Scatter Plot
+Scatter Plot showing earlier peak in firefly abundance over the years.
 ```{r}
-#make plot of Max Julian day
+# plot each year's Julian day max
 table_Julian <- table(data$Year, data$Julian)
-#find the max count each year
-max_col <- apply(table_Julian, 1, which.max) 
-# create a data frame with year and max julian day
-numb_Julian <- as.numeric(colnames(table_Julian)[max_col])
-numb_year <- c(2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024)
+# find the max count for each year
+max_col <- apply(table_Julian, 1, which.max)
+# create a data frame with year and max Julian day
+Julian <- as.numeric(colnames(table_Julian)[max_col])
+Year <- c(2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024)
+# create a color gradient
+color_gradient <- colorRampPalette(c("steelblue1", "steelblue4"))
+# Generate a vector (color gradient) based on Julian values
+cols <- color_gradient(100)[as.numeric(cut(Julian, breaks = 100))]
 #plot as scatter plot
-plot(numb_year, numb_Julian, main = "Peak Firefly Observation Counts", xlab = "Year", ylab = "Julian")
+plot(Year, Julian, main = "Scatterplot of Peak Counts Each Year",
+     col = cols,
+     pch = 19,       # filled circles
+     cex = 1.5,      # point size
+     ylab = "Julian Day")
+# add a linear regression trendline
+abline(lm(Julian ~ Year), col = "blue", lwd = 2, lty = 2)
 ```
-Fill in here... Explain that you tested whether the presence or number of house finch blood meals predicts whether a site had higher WNV positivity rate in tested mosquito pools. Mention that this statistical test lets you formally evaluate the relationship suggested by the barplots.
+
+We plotted the day of each year (Julian day) in which firefly observations indicated peak abundance from 2016 to 2024. The lower the Julian day value, the earlier in the year it represents. The trend line indicates that there has been a gradual shift towards firefly abundance peaking earlier in the year over the past 8 years. The slope of the trend line is -1.5, as indicated in the 3rd analysis. This scatter plot is helpful to clearly visualize when exactly firefly counts have peaked each year from 2016 to 2024. The trend line provides clarity of the pattern that is revealed by the data.
 
 ## 3rd Analysis
 ANOVA Test
 ```{r}
 #create data frame 
-Julian_dataframe <- data.frame(ColumnA = numb_Julian, ColumnB = numb_year)
+Julian_dataframe <- data.frame(ColumnA = Julian, ColumnB = Year)
 m1 <- lm( ColumnA ~ ColumnB, data=Julian_dataframe)
-# run anova test for p value
+# ANOVA test to test for significance
 anova(m1)
 summary(m1)
 ```
+These statistical tests allowed for evaluation of significance of the data. The ANOVA F value (1.2014) is a measure of how much of the variance from ColumnA can be explained by ColumnB in comparison to unexplained variance. The found p value of 0.3093 is above the threshold of 0.05, indicating the data is not statistically significant. The residuals summary tells us that there is moderate variability as the spread is from -18.278 to 16.222. This is how far the points are from the regression line. And finally, the coefficients table tells us the slope for the regression line is -1.5 (each unit increase in ColumnB indicates a 1.5 unit decrease in ColumnA). (Copilot, personal communication, November 22, 2025)
+
 # DISCUSSION
 
-Fill in here... For each analysis, summarize what you found and interpret the results. Say whether they support or contradict your hypothesis.
+From the data set, it is not evident that there is a clear trend of firefly peak sightings occurring earlier over the years. Although the trend line suggests a slight shift towards earlier peak firefly abundance, the regression analysis calculated a p value that is above the standard threshold of 0.05, indicating no statistical significance. Our study does have some limitations however. Despite cleaning up the citizen observations for our data set, there are likely still some inaccuracies due to inconsistent reporting methods. Additionally, uneven data entries across the years could skew the data, introducing bias. This could making one year's data appear more reliable and significant than another's due to larger sample sizes.
 
-## Interpretation of 1st analysis (e.g. barplots)
+Future studies would benefit from standardized entries, data collection protocols, and more observations. This would allow for reliable, consistent, and unbiased data.
 
-The first analysis... fill in here what it was, the summary of the results, and your interpretation. 
+## Interpretation of 1st analysis (multi bar plot)
+The multi bar plot indicates the number of instances (the occurrence of a firefly sighting) per year ranging from 2016 to 2024. Each year has subdivided data which indicated four months of the year, correlating to the seasons. Month 3 is March (spring), month 6 indicates June (summer), month 9 is September (fall), and month 12 is December (winter). This detailed graph allowed us to interpret which month/season saw the most fireflies per year and helped us to easily compare sightings across the year to aid in answering the research question. Looking at the graph, it is clear that June is the peak month for firefly instances, while data for the other months is not consistent across the years.
 
-## Interpretation of 2nd analysis (e.g. generalized linear model)
+## Interpretation of 2nd analysis (scatter plot)
+The scatter plot indicates the exact day (Julian day) based on the data set that firefly sightings peaked. This is shown from each year 2016 to 2024. It can be seen that 2016 had a very late peak firefly sighting occurrence in comparison to the other years considered. This is likely an outlier as each other data point appears much closer to the others plotted. The regression trend line shows a slight shift towards earlier peak firefly abundance as the years go on.
 
-The second analysis... fill in here what it was, the summary of the results, and your interpretation.
-
-## Optional interpretation of 3rd analysis (e.g. heatmaps)
-
-The third analysis... fill in here what it was, the summary of the results, and your interpretation.
+## Optional interpretation of 3rd analysis (ANOVA and summary tests)
+The third analysis takes the data plotted in the two previous analyses and tests the statistical significance of them. From the ANOVA test and summary, it was determined that the data was not statistically significant. This is evident from the p value of 0.3093, which is significantly higher than the determined threshold of significance (p < 0.05). The ANOVA F value (1.2014) measures how much of the variance from ColumnA can be explained by ColumnB in comparison to unexplained variance. Our F value tells us that ColumnB can not be effectively used to predict ColumnA. We also ran a residuals summary, which tells us that there is moderate variability as the spread is from -18.278 to 16.222. This indicates how far the points on the scatter plot are from the regression line. Lastly, our analysis on the coefficients table indicates the slope for the regression line as -1.5 (each unit increase in ColumnB indicates a 1.5 unit decrease in ColumnA).However, because of the p value, this is not statistically significant. 
 
 # CONCLUSION
-
-Fill in here... State the overall answer to your research question, based on all analyses. Mention whether the evidence supports your hypothesis and what it suggests about WNV amplification in Salt Lake City.
+In conclusion, the question of is firefly peak abundance occurring sooner than in years previous can be answered through the analyses we have ran. It was predicted that if the hypothesis is not rejected, then firefly abundance will peak earlier in June when compared to observational data from previous years from summer months. However, it can be concluded that firefly abundance is not peaking earlier over the years. The data does not show statistical significance, indicated by the large p value. However, the trend line indicates that firefly peak abundance is occurring earlier in the year as years go on (Figure 2). This trend is relevant as it provides inspires further research of firefly behavior and factors that affect the behavior. Further research must be done to understand environmental influences on firefly behavior. Possible areas to explore are the effects of temperature, precipitation, and light intensity (pollution) on the timing of yearly peak firefly abundance.
 
 # REFERENCES     
-Evans, T. R., Salvatore, D., van de Pol, M., & Musters, C. j. m. (2019). Adult firefly abundance is linked to weather during the larval stage in the previous year. Ecological Entomology, 44(2), 265–273. https://doi.org/10.1111/een.12702
+1. Evans, T. R., Salvatore, D., van de Pol, M., & Musters, C. j. m. (2019). Adult firefly abundance is linked to weather during the larval stage in the previous year. Ecological Entomology, 44(2), 265–273. https://doi.org/10.1111/een.12702
 
-U.S. Department of Agriculture. (n.d.). Temperature over the last 10 years: Utah historical weather dashboard. Farmers.gov. . https://www.farmers.gov/dashboard/utah/utah/historical-weather?hc_temp_chart=%7B%22temp_type%22%3A%22all%22%2C%22month%22%3A%225%22%7D
+2. OpenAI. (2025, October 30). Barplot creation in R [Generative AI chat]. ChatGPT.
+
+3. U.S. Department of Agriculture. (n.d.). Temperature over the last 10 years: Utah historical weather dashboard. Farmers.gov. . https://www.farmers.gov/dashboard/utah/utah/historical-weather?hc_temp_chart=%7B%22temp_type%22%3A%22all%22%2C%22month%22%3A%225%22%7D
