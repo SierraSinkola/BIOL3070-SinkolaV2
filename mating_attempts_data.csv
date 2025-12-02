@@ -1,0 +1,20 @@
+Flour Type,Replicate,Attempt,Time,Status
+Oat,2,1,09:10,Unsuccessful
+Oat,2,2,11:44,Successful
+Rice,1,1,16:05,Successful
+Rice,1,2,24:08,Successful
+Rice,3,1,23:04,Successful
+Almond,2,1,15:08,Unsuccessful
+Almond,2,2,18:22,Successful
+Almond,3,1,12:28,Unsuccessful
+Almond,3,2,13:13,Unsuccessful
+Almond,3,3,20:34,Unsuccessful
+Almond,3,4,29:28,Unsuccessful
+Whole Wheat,1,1,22:26,Successful
+Whole Wheat,2,1,08:25,Unsuccessful
+Whole Wheat,2,2,14:00,Successful
+Whole Wheat,2,3,28:19,Unsuccessful
+Whole Wheat,3,1,10:18,Unsuccessful
+Whole Wheat,3,2,16:45,Successful
+Whole Wheat,3,3,25:21,Successful
+Whole Wheat,3,4,28:30,Unsuccessful
